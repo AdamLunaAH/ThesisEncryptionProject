@@ -1,0 +1,8 @@
+namespace Slices.Chat;
+
+public class ChatTestSettings
+{
+    public const string Position = "ChatTest";
+
+    public string HubUrl { get; set; } = "https://localhost:7258/chathub";
+}

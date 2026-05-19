@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../2.Domain.Models/Domain.Models.csproj" />
+    <ProjectReference Include="../3a.DataAccess.Repositories/DataAccess.Repositories.csproj" />
+    <ProjectReference Include="../3c.DataAccess.Models/DataAccess.Models.csproj" />
+    <ProjectReference Include="../4a.CrossCut.Concerns/CrossCut.Concerns.csproj" />
+    <ProjectReference Include="../4b.CrossCut.Secrets/CrossCut.Secrets.csproj" />
+  </ItemGroup>
+
+</Project>

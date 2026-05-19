@@ -1,0 +1,66 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>07fc2ae5-4d67-4a58-8af4-787c8793b019</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Copyright>AdamLunaAH $([System.DateTime]::UtcNow.Year)</Copyright>
+    <Description>
+      App.WebApiEncryption - A
+    </Description>
+    <Company>AdamLunaAH</Company>
+    <Product>EncryptionProject</Product>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);USE_SCALAR</DefineConstants>
+    <!-- <DefineConstants>$(DefineConstants);USE_SWAGGER</DefineConstants> -->
+    <DefineConstants>$(DefineConstants);DEBUG_LOCALHOST</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyMetadata Include="BuildTime" Value="$([System.DateTime]::UtcNow.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;)) UTC" />
+    <AssemblyMetadata Include="BuildMachine" Value="$([System.Environment]::MachineName)" />
+    <AssemblyMetadata Include="BuildUser" Value="$([System.Environment]::UserName)" />
+    <AssemblyMetadata Include="CompanyUrl" Value="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7" Condition="$(DefineConstants.Contains('USE_SCALAR'))" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.5.0" Condition="$(DefineConstants.Contains('USE_SCALAR'))" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1" Condition="$(DefineConstants.Contains('USE_SWAGGER'))" />
+    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.33.0" />
+    <PackageReference Include="OpenTelemetry.Api" Version="1.15.3" />
+    <PackageReference Include="Microsoft.Orleans.Server" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Client" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Serialization" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Dashboard" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Clustering.AdoNet" Version="10.1.0" />
+    <PackageReference Include="Npgsql" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.ResourceMonitoring" Version="10.5.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.3" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.15.3" />
+    <PackageReference Include="Spectre.Console" Version="0.55.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../0.Slices/Slices.csproj" />
+    <ProjectReference Include="../1.Domain.Services/Domain.Services.csproj" />
+    <ProjectReference Include="../2.Domain.Models/Domain.Models.csproj" />
+    <ProjectReference Include="../3a.DataAccess.Repositories/DataAccess.Repositories.csproj" />
+    <ProjectReference Include="../3b.DataAccess.DbContext/DataAccess.DbContext.csproj" />
+    <ProjectReference Include="../3c.DataAccess.Models/DataAccess.Models.csproj" />
+    <ProjectReference Include="../4a.CrossCut.Concerns/CrossCut.Concerns.csproj" />
+    <ProjectReference Include="../4b.CrossCut.Secrets/CrossCut.Secrets.csproj" />
+    <ProjectReference Include="../1.Benchmark.Grains/Benchmark.Grains.csproj" />
+  </ItemGroup>
+
+</Project>

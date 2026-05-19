@@ -1,0 +1,68 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "App.Functions attach to .NET Functions",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:azureFunctions.pickProcess}"
+        },
+        {
+            "name": "App.WebApiEncryption",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/0.App.WebApiEncryption/bin/Debug/net10.0/App.WebApiEncryption.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/0.App.WebApiEncryption",
+            "stopAtEntry": false,
+            "console": "externalTerminal",
+            "launchSettingsProfile": "https",
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https://\\S+)",
+                "uriFormat": "%s/scalar/v1"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://localhost:7258;http://localhost:5183"
+            }
+        },
+        {
+            "name": "App.EncryptionMonitor",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/0.EncryptionMonitor/bin/Debug/net10.0/EncryptionMonitor.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/0.EncryptionMonitor",
+            "stopAtEntry": false,
+            "console": "externalTerminal",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+
+        {
+            "name": "Swagger + App.WebApiEncryption",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/0.App.WebApiEncryption/bin/Debug/net10.0/App.WebApiEncryption.dll",
+            "cwd": "${workspaceFolder}/0.App.WebApiEncryption",
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+                "uriFormat": "%s/swagger"
+            },
+            "enableStepFiltering": false
+        }
+    ],
+    "compounds": [
+        {
+            "name": "WebApi + EncryptionMonitor",
+            "configurations": ["App.WebApiEncryption", "App.EncryptionMonitor"],
+            "stopAll": true
+        }
+    ]
+}

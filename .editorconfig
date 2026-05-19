@@ -1,0 +1,8 @@
+root = true
+
+[*.cs]
+dotnet_diagnostic.CA1416.severity = none
+dotnet_diagnostic.MVVMTK0045.severity = none
+
+[**/obj/**]
+dotnet_analyzer_diagnostic.severity = none

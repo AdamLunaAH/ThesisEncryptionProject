@@ -1,0 +1,39 @@
+<Solution>
+  <Folder Name="/0.App.WebApiEncryption/">
+    <Project Path="0.App.WebApiEncryption/App.WebApiEncryption.csproj" />
+  </Folder>
+  <Folder Name="/0.EncryptionMonitor/">
+    <Project Path="0.EncryptionMonitor/EncryptionMonitor.csproj" />
+  </Folder>
+  <Folder Name="/0.Slices/">
+    <Project Path="0.Slices/Slices.csproj" />
+  </Folder>
+  <Folder Name="/1.Benchmark.Client/">
+    <Project Path="1.Benchmark.Client/Benchmark.Client.csproj" />
+  </Folder>
+  <Folder Name="/1.Benchmark.Grains/">
+    <Project Path="1.Benchmark.Grains/Benchmark.Grains.csproj" />
+  </Folder>
+  <Folder Name="/1.Domain.Services/">
+    <Project Path="1.Domain.Services/Domain.Services.csproj" />
+  </Folder>
+  <Folder Name="/1.SessionRegistry.Grains/" />
+  <Folder Name="/2.Domain.Models/">
+    <Project Path="2.Domain.Models/Domain.Models.csproj" />
+  </Folder>
+  <Folder Name="/3.DataAccess.Repositories/">
+    <Project Path="3a.DataAccess.Repositories/DataAccess.Repositories.csproj" />
+  </Folder>
+  <Folder Name="/3.DataAccess.DbContext/">
+    <Project Path="3b.DataAccess.DbContext/DataAccess.DbContext.csproj" />
+  </Folder>
+  <Folder Name="/3.DataAccess.Models/">
+    <Project Path="3c.DataAccess.Models/DataAccess.Models.csproj" />
+  </Folder>
+  <Folder Name="/4.CrossCut.Concerns/">
+    <Project Path="4a.CrossCut.Concerns/CrossCut.Concerns.csproj" />
+  </Folder>
+  <Folder Name="/4.CrossCut.Secrets/">
+    <Project Path="4b.CrossCut.Secrets/CrossCut.Secrets.csproj" />
+  </Folder>
+</Solution>

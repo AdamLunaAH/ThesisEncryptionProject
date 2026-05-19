@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>_0.Slices</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions"
+      Version="10.0.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Microsoft.Orleans.Sdk" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Server" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Core.Abstractions" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Orleans.Runtime" Version="10.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\1.Benchmark.Client\Benchmark.Client.csproj" />
+    <ProjectReference Include="../1.Domain.Services/Domain.Services.csproj" />
+    <ProjectReference Include="../2.Domain.Models/Domain.Models.csproj" />
+    <ProjectReference Include="../3a.DataAccess.Repositories/DataAccess.Repositories.csproj" />
+    <ProjectReference Include="../3b.DataAccess.DbContext/DataAccess.DbContext.csproj" />
+    <ProjectReference Include="../3c.DataAccess.Models/DataAccess.Models.csproj" />
+    <ProjectReference Include="../4a.CrossCut.Concerns/CrossCut.Concerns.csproj" />
+    <ProjectReference Include="../4b.CrossCut.Secrets/CrossCut.Secrets.csproj" />
+    <ProjectReference Include="..\1.Benchmark.Grains\Benchmark.Grains.csproj" />
+  </ItemGroup>
+
+</Project>

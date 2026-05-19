@@ -1,0 +1,28 @@
+namespace Slices.Chat;
+
+public interface IChatTestClientService : IAsyncDisposable
+{
+    string UserId { get; }
+    string Username { get; }
+    string? CurrentSessionId { get; }
+
+    event Action<string>? OnSystemMessage;
+    event Action<string, string>? OnMessageReceived;
+    event Action<string>? OnMatchFound;
+    event Action<List<string>>? OnParticipantsReceived;
+    event Action<string>? OnSessionJoinFailed;
+    event Action? OnLeftSession;
+    event Action? OnWaitingForMatch;
+
+    Task StartAsync();
+    Task CreateSessionAsync();
+    Task JoinSessionByIdAsync(string sessionId);
+    Task JoinMatchmakingAsync();
+    Task LeaveMatchmakingAsync();
+    Task DisconnectAsync();
+
+    Task SendEncryptedChatMessageAsync(string message);
+    Task SendEncryptedGeneratedMoveAsync(string moveStart, string moveEnd);
+
+    Task LeaveSessionAsync();
+}

@@ -1,0 +1,184 @@
+using Domain.Models.Game;
+using Domain.Models.Game.DTO;
+using Domain.Services.Encryptions;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Options;
+
+namespace Slices.Chat;
+
+public class ChatTestClientService : IChatTestClientService
+{
+    private readonly ChatTestSettings _settings;
+    private readonly EncryptionService _encryptionService;
+    private HubConnection? _hubConnection;
+
+    public string UserId { get; }
+    public string Username { get; }
+    public string? CurrentSessionId { get; private set; }
+
+    public event Action<string>? OnSystemMessage;
+    public event Action<string, string>? OnMessageReceived;
+    public event Action<string>? OnMatchFound;
+    public event Action<List<string>>? OnParticipantsReceived;
+    public event Action<string>? OnSessionJoinFailed;
+    public event Action? OnLeftSession;
+    public event Action? OnWaitingForMatch;
+
+    public ChatTestClientService(
+        string userId,
+        string username,
+        IOptions<ChatTestSettings> options,
+        EncryptionService encryptionService)
+    {
+        UserId = userId;
+        Username = username;
+        _settings = options.Value;
+        _encryptionService = encryptionService;
+    }
+
+    public async Task StartAsync()
+    {
+        if (_hubConnection != null && _hubConnection.State != HubConnectionState.Disconnected)
+            return;
+
+        if (_hubConnection != null)
+        {
+            await _hubConnection.DisposeAsync();
+            _hubConnection = null;
+        }
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(_settings.HubUrl)
+            .WithAutomaticReconnect()
+            .Build();
+
+        RegisterEvents();
+
+        await _hubConnection.StartAsync();
+        await _hubConnection.SendAsync("RegisterUser", UserId, Username);
+    }
+
+    private void RegisterEvents()
+    {
+        _hubConnection!.On<string>("MatchFound", sid =>
+        {
+            CurrentSessionId = sid;
+            OnMatchFound?.Invoke(sid);
+        });
+
+        _hubConnection.On<string>("SessionJoinFailed", reason =>
+            OnSessionJoinFailed?.Invoke(reason));
+
+        _hubConnection.On("WaitingForMatch", () =>
+            OnWaitingForMatch?.Invoke());
+
+        _hubConnection.On("LeftSession", () =>
+        {
+            CurrentSessionId = null;
+            OnLeftSession?.Invoke();
+        });
+
+        _hubConnection.On<List<string>>("MatchParticipants", users =>
+            OnParticipantsReceived?.Invoke(users));
+
+        _hubConnection.On<string>("ReceiveSystemMessage", msg =>
+            OnSystemMessage?.Invoke(msg));
+
+        _hubConnection.On<string>("ReceiveEncryptedChatMessage", encrypted =>
+        {
+            try
+            {
+                var payload = _encryptionService.Decrypt<ChatMessagePayload>(encrypted);
+                OnMessageReceived?.Invoke(payload.SenderDisplayName, payload.Message);
+            }
+            catch
+            {
+                OnSystemMessage?.Invoke("Failed to decrypt chat message.");
+            }
+        });
+
+        _hubConnection.On<string>("ReceiveEncryptedGeneratedData", encrypted =>
+        {
+            try
+            {
+                var payload = _encryptionService.Decrypt<GeneratedDataPayload>(encrypted);
+                OnSystemMessage?.Invoke(
+                    $"{payload.SenderDisplayName} move: {payload.MoveStart}->{payload.MoveEnd} ({payload.PieceType})");
+            }
+            catch
+            {
+                OnSystemMessage?.Invoke("Failed to decrypt generated data.");
+            }
+        });
+    }
+
+    public Task CreateSessionAsync() =>
+        _hubConnection!.SendAsync("CreateSession", UserId, Username);
+
+    public Task JoinSessionByIdAsync(string sessionId) =>
+        _hubConnection!.SendAsync("JoinSessionById", UserId, Username, sessionId);
+
+    public Task JoinMatchmakingAsync() =>
+        _hubConnection!.SendAsync("JoinMatchmaking", UserId, Username);
+
+    public Task LeaveMatchmakingAsync() =>
+        _hubConnection!.SendAsync("LeaveMatchmaking");
+
+    public Task LeaveSessionAsync() =>
+        _hubConnection!.SendAsync("LeaveSession");
+
+    public async Task DisconnectAsync()
+    {
+        if (_hubConnection != null)
+        {
+            await _hubConnection.DisposeAsync();
+            _hubConnection = null;
+            CurrentSessionId = null;
+        }
+    }
+
+    public Task SendEncryptedChatMessageAsync(string message)
+    {
+        var payload = new ChatMessagePayload
+        {
+            SenderUserId = UserId,
+            SenderDisplayName = Username,
+            Message = message,
+            SentAtUtc = DateTime.UtcNow
+        };
+
+        var encrypted = _encryptionService.Api.AesEncryptToBase64(payload);
+        return _hubConnection!.SendAsync("SendEncryptedChatMessage", encrypted);
+    }
+
+    public Task SendEncryptedGeneratedMoveAsync(string moveStart, string moveEnd)
+    {
+        var payload = new GeneratedDataPayload
+        {
+            SenderUserId = UserId,
+            SenderDisplayName = Username,
+            MoveStart = moveStart,
+            MoveEnd = moveEnd,
+            PieceType = Random.Shared.Next(0, 4) switch
+            {
+                0 => GeneratedType.Red,
+                1 => GeneratedType.Green,
+                2 => GeneratedType.Blue,
+                _ => GeneratedType.Black
+            },
+            SentAtUtc = DateTime.UtcNow
+        };
+
+        var encrypted = _encryptionService.Api.AesEncryptToBase64(payload);
+        return _hubConnection!.SendAsync("SendEncryptedGeneratedData", encrypted);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection != null)
+        {
+            await _hubConnection.DisposeAsync();
+            _hubConnection = null;
+        }
+    }
+}
